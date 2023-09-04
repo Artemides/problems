@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
 func CountFileLines2() {
 	counts := make(map[string]int)
+	lineFile := make(map[string]string)
+
 	for _, filename := range os.Args[1:] {
+		fileExt := filepath.Ext(filename)
+		name := strings.TrimSuffix(filepath.Base(filename), fileExt)
 		data, err := ioutil.ReadFile(filename)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "%v\n", err)
@@ -19,10 +24,16 @@ func CountFileLines2() {
 
 		for _, line := range strings.Split(string(data), "\n") {
 			counts[line]++
+			if !strings.Contains(lineFile[line], name) {
+				lineFile[line] += name + " "
+			}
 		}
 	}
 	for line, times := range counts {
-		fmt.Printf("%v\t%s\n", times, line)
+		if times > 1 {
+			files := lineFile[line]
+			fmt.Printf("%v\t%s\t%s\n", times, files, line)
+		}
 	}
 }
 
@@ -54,6 +65,7 @@ func CountFileLines() {
 
 func countLines(f *os.File, counts map[string]int) {
 	input := bufio.NewScanner(f)
+
 	for input.Scan() {
 
 		counts[input.Text()]++
