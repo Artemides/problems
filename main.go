@@ -10,5 +10,5 @@ func main() {
 	// fmt.Printf("max substr: %v\n", dp.MaxHalvesSubstringLen("9430723"))
 	// dp.Maze()
 	// recursion.Search()
-	fundamentals.CountFileLines2()
+	fundamentals.Draw()
 }
