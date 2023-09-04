@@ -1,10 +1,6 @@
 package main
 
-import (
-	"fmt"
-	"os"
-	"strings"
-)
+import "github.com/Artemides/problems/fundamentals"
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -14,6 +10,5 @@ func main() {
 	// fmt.Printf("max substr: %v\n", dp.MaxHalvesSubstringLen("9430723"))
 	// dp.Maze()
 	// recursion.Search()
-	fmt.Println(os.Args[0])
-	fmt.Println(strings.Join(os.Args[1:], ""))
+	fundamentals.CountFileLines()
 }
