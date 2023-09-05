@@ -11,5 +11,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	fundamentals.Channels()
+	fundamentals.FetchAll()
 }
