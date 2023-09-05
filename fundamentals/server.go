@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"sync"
 )
 
@@ -25,6 +26,12 @@ func ServerCounter() {
 	http.HandleFunc("/", countHandler)
 	http.HandleFunc("/requests", countRequestsHandler)
 	http.HandleFunc("/metadata", metadataHandler)
+	http.HandleFunc("/gif", func(w http.ResponseWriter, r *http.Request) {
+		params := r.URL.Query()
+		cycles, _ := strconv.Atoi(params.Get("cycles"))
+		Lissajous(w, float64(cycles))
+	})
+
 	fmt.Println("Listenning on port 8000")
 	log.Fatal(http.ListenAndServe(":8000", nil))
 }
@@ -44,11 +51,8 @@ func countRequestsHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//handler
-//printm method url protocol
-//iterate r.Header and print k v
-
 func metadataHandler(w http.ResponseWriter, r *http.Request) {
+
 	fmt.Fprintf(w, "%s %s %s \n", r.Method, r.URL, r.Proto)
 	for k, v := range r.Header {
 		fmt.Fprintf(w, "Header [%q] = %q\n", k, v)

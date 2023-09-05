@@ -7,7 +7,6 @@ import (
 	"io"
 	"math"
 	"math/rand"
-	"os"
 	"time"
 )
 
@@ -18,12 +17,8 @@ var palette = []color.Color{color.White, color.RGBA{0xA8, 0xDF, 0x8E, 0x99}, col
 // 	blackIndex = 1
 // )
 
-func Draw() {
-	lissajous(os.Stdout)
-}
-func lissajous(out io.Writer) {
+func Lissajous(out io.Writer, cicle float64) {
 	const (
-		cicle   = 5
 		res     = 0.00001
 		size    = 100
 		nframes = 64
