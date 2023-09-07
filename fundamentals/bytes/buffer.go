@@ -3,6 +3,7 @@ package bytes
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 func RunInts() {
@@ -19,4 +20,40 @@ func intsToStrings(values ...int) string {
 	}
 	buf.WriteByte(']')
 	return buf.String()
+}
+
+// add comma each thre chars
+func Commas(str string) string {
+	number := strings.Split(str, ".")
+	for i, substring := range number {
+
+		var buf bytes.Buffer
+		thisStr := substring
+		for len(thisStr) > 0 {
+			if len(thisStr) >= 4 {
+				buf.WriteString(thisStr[:3] + ",")
+				thisStr = thisStr[3:]
+				continue
+			}
+			buf.WriteString(thisStr)
+			thisStr = ""
+
+		}
+		number[i] = buf.String()
+	}
+	return strings.Join(number, ".")
+}
+
+func Anagrams(str1, str2 string) bool {
+	isAnagram := true
+	if len(str1) != len(str2) {
+		return false
+	}
+
+	for _, val := range str1 {
+		if !strings.Contains(str2, string(val)) {
+			isAnagram = false
+		}
+	}
+	return isAnagram
 }
