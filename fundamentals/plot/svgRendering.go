@@ -3,6 +3,7 @@ package plot
 import (
 	"fmt"
 	"math"
+	"os"
 )
 
 const (
@@ -17,19 +18,22 @@ const (
 var sin30, cos30 = math.Sin(angle), math.Cos(angle)
 
 func Draw() {
-	fmt.Printf("<svg' "+
+	filePath := "plot.txt"
+	tag := fmt.Sprintf("<svg' "+
 		"style='stroke:grey; fill:white; stroke-width: 0.7'"+
 		"width='%d' height='%d' >", width, height)
+	writeToFile(filePath, []byte(tag), false)
 	for i := 0; i < cells; i++ {
 		for j := 0; j < cells; j++ {
 			ax, ay := corner(i+1, j)
 			bx, by := corner(i, j)
 			cx, cy := corner(i, j+1)
 			dx, dy := corner(i+1, j+1)
-			fmt.Printf("<poligon points='%g, %g %g, %g %g, %g %g, %g ' />\n", ax, ay, bx, by, cx, cy, dx, dy)
+			points := fmt.Sprintf("<polygon points='%g, %g %g, %g %g, %g %g, %g ' />\n", ax, ay, bx, by, cx, cy, dx, dy)
+			writeToFile(filePath, []byte(points), false)
 		}
 	}
-	fmt.Println("</svg>")
+	writeToFile(filePath, []byte("</svg>"), true)
 }
 
 func corner(i, j int) (float64, float64) {
@@ -44,4 +48,21 @@ func corner(i, j int) (float64, float64) {
 func f(x, y float64) float64 {
 	r := math.Hypot(x, y)
 	return math.Sin(r) / r
+}
+
+func writeToFile(filePath string, content []byte, close bool) bool {
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		fmt.Println("Error Reading file...", err)
+		return false
+	}
+	if close {
+		defer file.Close()
+	}
+	_, err = file.Write(content)
+	if err != nil {
+		fmt.Println("Error Writing file...", err)
+		return false
+	}
+	return true
 }
