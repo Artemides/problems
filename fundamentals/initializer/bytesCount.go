@@ -43,5 +43,11 @@ func PopCountIter(x uint64) int {
 
 		count += pc[byte(x>>(i*8))]
 	}
+
 	return int(count)
+}
+
+func Bitwise() {
+
+	fmt.Printf("%b %b %b", 1<<1, 1<<5, 1<<1|1<<5)
 }

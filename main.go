@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Artemides/problems/fundamentals/initializer"
+import (
+	"github.com/Artemides/problems/fundamentals/plot"
+)
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -11,5 +13,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	initializer.Run()
+	plot.Draw()
 }
