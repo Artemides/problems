@@ -13,5 +13,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	plot.Draw()
+	plot.Render()
 }
