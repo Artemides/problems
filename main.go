@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/composite"
+	"github.com/Artemides/problems/fundamentals/slices"
 )
 
 func main() {
@@ -13,5 +13,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	composite.CompareHash()
+	slices.Rotate(4)
 }
