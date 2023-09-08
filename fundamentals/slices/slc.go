@@ -1,6 +1,9 @@
 package slices
 
-import "fmt"
+import (
+	"fmt"
+	"unicode"
+)
 
 func Run() {
 	slc := []int{1, 2, 3, 4, 5}
@@ -100,4 +103,31 @@ func RemoveAdjacentDuplicated(ints *[]int) {
 		slc = rest
 	}
 	RemoveAdjacentDuplicated(&rest)
+}
+
+func SquashSpaces(bs *[]byte) {
+	bytes := *bs
+	isRun := false
+	lastSpace := -1
+	runStart := -1
+	for i, _rune := range bytes {
+		if unicode.IsSpace(rune(_rune)) {
+			if i-1 == lastSpace && !isRun {
+
+				runStart = lastSpace
+				isRun = true
+			}
+			lastSpace = i
+			continue
+		}
+
+		if isRun {
+			copy(bytes[runStart:], bytes[lastSpace:])
+			lastSpace = -1
+			runStart = -1
+		}
+		isRun = false
+
+	}
+
 }
