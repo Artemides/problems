@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/Artemides/problems/fundamentals/bytes"
+	"github.com/Artemides/problems/fundamentals/composite"
 )
 
 func main() {
@@ -15,5 +13,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	fmt.Println(bytes.Anagrams("aca", "baa"))
+	composite.CompareHash()
 }

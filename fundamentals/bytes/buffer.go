@@ -49,7 +49,6 @@ func Anagrams(str1, str2 string) bool {
 	if len(str1) != len(str2) {
 		return false
 	}
-
 	for _, val := range str1 {
 		if !strings.Contains(str2, string(val)) {
 			isAnagram = false
