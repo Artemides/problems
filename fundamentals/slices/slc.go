@@ -35,3 +35,20 @@ func Rotate(times int) {
 	reverse(ints)
 	fmt.Println(ints)
 }
+
+func Append(x []int, y int) []int {
+	var z []int
+	_len := len(z) + 1
+	if _len <= cap(x) {
+		z = x[:_len]
+	} else {
+		zcap := _len
+		if zcap < 2*len(x) {
+			zcap = 2 * len(x)
+		}
+		z = make([]int, _len, zcap)
+		copy(z, x)
+	}
+	z[len(x)] = y
+	return z
+}
