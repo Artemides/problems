@@ -35,6 +35,11 @@ func Rotate(ints *[]int, times int) {
 	reverse(ints)
 }
 
+func RotateSinglePass(ints []int, times int) []int {
+	ints = append(ints[times:], ints[:times]...)
+	return ints
+}
+
 func Append(x []int, y int) []int {
 	var z []int
 	_len := len(z) + 1
