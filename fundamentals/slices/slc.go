@@ -86,3 +86,18 @@ func RemoveAtUnordered(strings []string, i uint) []string {
 	strings[i] = strings[len(strings)-1]
 	return strings[:len(strings)-1]
 }
+
+func RemoveAdjacentDuplicated(ints *[]int) {
+	slc := *ints
+	if len(slc) < 2 {
+		return
+	}
+
+	rest := slc[1:]
+	if slc[0] == slc[1] {
+		copy(slc, slc[1:])
+		rest = slc[:len(slc)-1]
+		slc = rest
+	}
+	RemoveAdjacentDuplicated(&rest)
+}
