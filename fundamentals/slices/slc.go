@@ -20,20 +20,19 @@ func Seasons() {
 
 }
 
-func reverse(slc []int) {
-	for i, j := 0, len(slc)-1; i < j; i, j = i+1, j-1 {
-		slc[i], slc[j] = slc[j], slc[i]
+func reverse(slc *[]int) {
+	slice := *slc
+	for i, j := 0, len(slice)-1; i < j; i, j = i+1, j-1 {
+		slice[i], slice[j] = slice[j], slice[i]
 	}
 }
 
-func Rotate(times int) {
-	ints := []int{1, 2, 3, 4, 5, 6}
-	reverse(ints[:times])
-	fmt.Println(ints)
-	reverse(ints[times:])
-	fmt.Println(ints)
+func Rotate(ints *[]int, times int) {
+	leftSlc := (*ints)[:times]
+	reverse(&leftSlc)
+	rightSlc := (*ints)[times:]
+	reverse(&rightSlc)
 	reverse(ints)
-	fmt.Println(ints)
 }
 
 func Append(x []int, y int) []int {
@@ -51,4 +50,34 @@ func Append(x []int, y int) []int {
 	}
 	z[len(x)] = y
 	return z
+}
+
+func NonEmpty(strings []string) []string {
+	i := 0
+	for _, v := range strings {
+		if v != "" {
+			strings[i] = v
+			i++
+		}
+	}
+	return strings[:i]
+}
+
+func NonEmptyAppend(strings []string) []string {
+	out := strings[:0]
+	for _, str := range strings {
+		if str != "" {
+			out = append(out, str)
+		}
+	}
+	return out
+}
+
+func RemoveAt(strings []string, i uint) []string {
+	copy(strings[i:], strings[i+1:])
+	return strings[:len(strings)-1]
+}
+func RemoveAtUnordered(strings []string, i uint) []string {
+	strings[i] = strings[len(strings)-1]
+	return strings[:len(strings)-1]
 }

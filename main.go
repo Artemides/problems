@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/Artemides/problems/fundamentals/slices"
 )
 
@@ -13,5 +15,7 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	slices.Rotate(4)
+	data := []int{1, 2, 3, 4, 5, 6}
+	slices.Rotate(&data, 2)
+	fmt.Println(data)
 }
