@@ -1,10 +1,6 @@
 package main
 
-import (
-	"fmt"
-
-	"github.com/Artemides/problems/fundamentals/slices"
-)
+import "github.com/Artemides/problems/fundamentals/maps"
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -15,7 +11,5 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	bytes := []byte("01  456     AB ACD  AD     ES ")
-	slices.SquashSpaces(&bytes)
-	fmt.Println(string(bytes))
+	maps.Run()
 }
