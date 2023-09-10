@@ -11,5 +11,6 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	maps.Run()
+	// maps.RuneCount()
+	maps.WordFreq()
 }
