@@ -4,6 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"net/url"
+	"strings"
+	"time"
 )
 
 type Movie struct {
@@ -38,4 +42,55 @@ func Run() {
 	fmt.Printf("%s\n", decoded)
 	fmt.Printf("%s\n%s\n", dataIndented, data)
 	// plot.WriteToFile("movies.json", data, true)
+}
+
+type IssuesSearchResult struct {
+	TotalCount int `json:"total_count"`
+	Items      []*Issue
+}
+
+type Issue struct {
+	Number    int
+	HTMLURL   string `json:"html_url"`
+	Title     string
+	State     string
+	User      *User
+	CreatedAt time.Time `json:"created_at"`
+	Body      string
+}
+
+type User struct {
+	Login   string
+	HTMLURL string `json:"html_url"`
+}
+
+func Get() {
+	terms := []string{"term"}
+	respose, err := searchIssues(terms)
+	if err != nil {
+		log.Fatalf("error...%s", err)
+	}
+	fmt.Println(respose)
+}
+
+func searchIssues(terms []string) (*IssuesSearchResult, error) {
+	const httpUrl = "https://api.github.com/search/issues"
+	query := url.QueryEscape(strings.Join(terms, " "))
+
+	response, err := http.Get(httpUrl + "?q=" + query)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("searching query failed %s", response.Status)
+	}
+
+	var searchResult IssuesSearchResult
+
+	if err := json.NewDecoder(response.Body).Decode(&searchResult); err != nil {
+		return nil, err
+	}
+	return &searchResult, nil
 }
