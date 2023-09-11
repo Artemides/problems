@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Artemides/problems/fundamentals/maps"
+import (
+	"github.com/Artemides/problems/fundamentals/structs"
+)
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -12,5 +14,5 @@ func main() {
 	// recursion.Search()
 	// fundamentals.Fetch()
 	// maps.RuneCount()
-	maps.WordFreq()
+	structs.Compare()
 }
