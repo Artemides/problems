@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
 	"time"
 )
@@ -65,18 +66,38 @@ type User struct {
 }
 
 func Get() {
-	terms := []string{"term"}
-	respose, err := searchIssues(terms)
+	terms := os.Args[1:]
+	issues, err := searchIssues(terms)
 	if err != nil {
-		log.Fatalf("error...%s", err)
+		log.Fatal(err)
 	}
-	fmt.Println(respose)
+	monthlyIssues := getMonthlyIssues(issues, 12)
+	fmt.Printf("issues: %d\n", monthlyIssues.TotalCount)
+	for _, issue := range monthlyIssues.Items {
+		fmt.Printf("#%-5d %v %9.9s %.55s\n", issue.Number, issue.CreatedAt.Format("01-02-2006"), issue.User.Login, issue.Title)
+	}
+}
+
+func getMonthlyIssues(issues *IssuesSearchResult, months int) *IssuesSearchResult {
+	var result IssuesSearchResult
+	monthAgo := getMothsAgo(months)
+	for _, issue := range issues.Items {
+		if issue.CreatedAt.After(monthAgo) {
+			result.TotalCount++
+			result.Items = append(result.Items, issue)
+		}
+	}
+	return &result
+}
+
+func getMothsAgo(monthsAgo int) time.Time {
+	return time.Now().AddDate(0, -monthsAgo, 0)
 }
 
 func searchIssues(terms []string) (*IssuesSearchResult, error) {
 	const httpUrl = "https://api.github.com/search/issues"
 	query := url.QueryEscape(strings.Join(terms, " "))
-
+	fmt.Printf("query: %s", query)
 	response, err := http.Get(httpUrl + "?q=" + query)
 	if err != nil {
 		return nil, err
