@@ -14,5 +14,5 @@ func main() {
 	// recursion.Search()
 	// fundamentals.Fetch()
 	// maps.RuneCount()
-	structs.Compare()
+	structs.Run()
 }

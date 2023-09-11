@@ -22,7 +22,7 @@ func Draw() {
 	tag := fmt.Sprintf("<svg' "+
 		"style='stroke:grey; fill:white; stroke-width: 0.7'"+
 		"width='%d' height='%d' >", width, height)
-	writeToFile(filePath, []byte(tag), false)
+	WriteToFile(filePath, []byte(tag), false)
 	for i := 0; i < cells; i++ {
 		for j := 0; j < cells; j++ {
 			ax, ay := corner(i+1, j)
@@ -30,10 +30,10 @@ func Draw() {
 			cx, cy := corner(i, j+1)
 			dx, dy := corner(i+1, j+1)
 			points := fmt.Sprintf("<polygon points='%g, %g %g, %g %g, %g %g, %g ' />\n", ax, ay, bx, by, cx, cy, dx, dy)
-			writeToFile(filePath, []byte(points), false)
+			WriteToFile(filePath, []byte(points), false)
 		}
 	}
-	writeToFile(filePath, []byte("</svg>"), true)
+	WriteToFile(filePath, []byte("</svg>"), true)
 }
 
 func corner(i, j int) (float64, float64) {
@@ -50,7 +50,7 @@ func f(x, y float64) float64 {
 	return math.Sin(r) / r
 }
 
-func writeToFile(filePath string, content []byte, close bool) bool {
+func WriteToFile(filePath string, content []byte, close bool) bool {
 	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0644)
 	if err != nil {
 		fmt.Println("Error Reading file...", err)

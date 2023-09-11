@@ -1,0 +1,38 @@
+[
+  {
+    "Title": "The Lord of the rings",
+    "released": 2001,
+    "color": true,
+    "Actors": ["Candalf", "Frodo", "Sam", "Pipin"]
+  },
+  {
+    "Title": "The Lord of the rings I",
+    "released": 2004,
+    "color": true,
+    "Actors": ["Candalf", "Frodo", "Sam", "Pipin"]
+  },
+  {
+    "Title": "The Lord of the rings II",
+    "released": 2005,
+    "color": true,
+    "Actors": ["Candalf", "Frodo", "Sam", "Pipin"]
+  },
+  {
+    "Title": "The Hobbit I",
+    "released": 2014,
+    "color": true,
+    "Actors": ["Candalf", "Legolas", "Sam", "Pipin"]
+  },
+  {
+    "Title": "The Hobbit II",
+    "released": 2016,
+    "color": true,
+    "Actors": ["Candalf", "Frodo", "Sam", "Pipin"]
+  },
+  {
+    "Title": "The Hobbit III",
+    "released": 2019,
+    "color": true,
+    "Actors": ["Candalf", "Frodo", "Sam", "Pipin"]
+  }
+]
