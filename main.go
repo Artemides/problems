@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/Artemides/problems/fundamentals/structs"
-)
+import "github.com/Artemides/problems/fundamentals/templates"
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -14,5 +12,5 @@ func main() {
 	// recursion.Search()
 	// fundamentals.Fetch()
 	// maps.RuneCount()
-	structs.Get()
+	templates.Run()
 }

@@ -67,7 +67,7 @@ type User struct {
 
 func Get() {
 	terms := os.Args[1:]
-	issues, err := searchIssues(terms)
+	issues, err := SearchIssues(terms)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -94,10 +94,9 @@ func getMothsAgo(monthsAgo int) time.Time {
 	return time.Now().AddDate(0, -monthsAgo, 0)
 }
 
-func searchIssues(terms []string) (*IssuesSearchResult, error) {
+func SearchIssues(terms []string) (*IssuesSearchResult, error) {
 	const httpUrl = "https://api.github.com/search/issues"
 	query := url.QueryEscape(strings.Join(terms, " "))
-	fmt.Printf("query: %s", query)
 	response, err := http.Get(httpUrl + "?q=" + query)
 	if err != nil {
 		return nil, err
