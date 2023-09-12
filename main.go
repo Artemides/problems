@@ -12,5 +12,5 @@ func main() {
 	// recursion.Search()
 	// fundamentals.Fetch()
 	// maps.RuneCount()
-	templates.Run()
+	templates.TrustedHTML()
 }

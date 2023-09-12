@@ -1,9 +1,9 @@
 package templates
 
 import (
-	"html/template"
 	"log"
 	"os"
+	"text/template"
 	"time"
 
 	"github.com/Artemides/problems/fundamentals/structs"
