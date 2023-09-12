@@ -11,6 +11,7 @@ func main() {
 	// dp.Maze()
 	// recursion.Search()
 	// fundamentals.Fetch()
-	// maps.RuneCount()
-	templates.TrustedHTML()
+	// maps.RuneCount()\
+	// fundamentals.Fetch()
+	templates.RunNodeHTML()
 }
