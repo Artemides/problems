@@ -81,6 +81,39 @@ func visit(links []string, n *html.Node) []string {
 // 	return links
 // }
 
+func GetHTMLTagsFrequency() {
+
+	doc, err := html.Parse(os.Stdin)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Parsing Err: %v", err)
+		os.Exit(1)
+	}
+	htmlElementFrequency := make(map[string]int)
+	getHTMLTagFrequencies(htmlElementFrequency, doc)
+	fmt.Printf("links: %d\n", len(htmlElementFrequency))
+	for tag, frequency := range htmlElementFrequency {
+		fmt.Printf("<%s>%v</%s>\n", tag, frequency, tag)
+	}
+}
+
+func getHTMLTagFrequencies(elements map[string]int, n *html.Node) {
+	if n == nil || (n.Parent == nil && n.FirstChild == nil) {
+		return
+	}
+
+	if n.FirstChild == nil {
+		if n.Type == html.ElementNode {
+
+			elements[n.Data]++
+		}
+
+		parent := n.Parent
+		parent.RemoveChild(n)
+		getHTMLTagFrequencies(elements, parent)
+	}
+	getHTMLTagFrequencies(elements, n.FirstChild)
+}
+
 func PrintHtmlOutline() {
 	doc, err := html.Parse(os.Stdin)
 	if err != nil {

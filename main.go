@@ -13,6 +13,6 @@ func main() {
 	// fundamentals.Fetch()
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
-	templates.RunNodeHTML()
+	templates.GetHTMLTagsFrequency()
 	//138 Links
 }
