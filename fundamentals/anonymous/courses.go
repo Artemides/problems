@@ -5,7 +5,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"sort"
 
 	"golang.org/x/net/html"
 )
@@ -45,15 +44,46 @@ func SortCourses(graph map[string][]string) []string {
 	for _, key := range graph {
 		keys = append(keys, key...)
 	}
-	sort.Strings(keys)
+
 	visitAll(keys)
 	return order
 }
 
+func SortCoursesMaps(graph map[string][]string) map[string][]string {
+	order := make(map[string][]string)
+	seen := make(map[string]bool)
+	var visitAll func(nodes []string)
+	visitAll = func(nodes []string) {
+		for _, node := range nodes {
+			if !seen[node] {
+				seen[node] = true
+				visitAll(graph[node])
+				order[node] = append(order[node], graph[node]...)
+			}
+		}
+	}
+
+	var keys []string
+	idx := 0
+	for _, key := range graph {
+		if idx >= 4 {
+			break
+		}
+		keys = append(keys, key...)
+		idx++
+	}
+
+	visitAll(keys)
+	return order
+}
 func RunAnonymous() {
-	order := SortCourses(prereq)
-	for idx, course := range order {
-		fmt.Printf("%d. %s\n", idx+1, course)
+	order := SortCoursesMaps(prereq)
+	for key, courses := range order {
+		fmt.Printf("%s\n", key)
+		for idx, course := range courses {
+			fmt.Printf("\t%d. %s\n", idx+1, course)
+		}
+
 	}
 }
 
