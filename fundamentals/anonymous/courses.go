@@ -49,6 +49,26 @@ func SortCourses(graph map[string][]string) []string {
 	return order
 }
 
+func TestCicle() {
+	fmt.Println(courseCicled(&prereq, "formal languages", "formal languages"))
+}
+func courseCicled(graph *map[string][]string, targetCourse, currentCourse string) bool {
+	courses := *graph
+	prerequisites := courses[currentCourse]
+	is := false
+	if prerequisites == nil {
+		return is
+	}
+	for _, prerequisite := range prerequisites {
+		fmt.Println(prerequisite)
+		if targetCourse == prerequisite {
+			return true
+		}
+
+		is = is || courseCicled(graph, targetCourse, prerequisite)
+	}
+	return is
+}
 func SortCoursesMaps(graph map[string][]string) map[string][]string {
 	order := make(map[string][]string)
 	seen := make(map[string]bool)

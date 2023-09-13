@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	anonymous.RunAnonymous()
+	anonymous.TestCicle()
 }
