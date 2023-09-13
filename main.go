@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Artemides/problems/fundamentals/templates"
+import (
+	"github.com/Artemides/problems/fundamentals/anonymous"
+)
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -13,6 +15,6 @@ func main() {
 	// fundamentals.Fetch()
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
-	templates.GetHTMLTagsFrequency()
 	//138 Links
+	anonymous.RunCrawl()
 }
