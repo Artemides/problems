@@ -1,11 +1,13 @@
 package deferred
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"path"
+	"runtime"
 	"time"
 )
 
@@ -93,6 +95,24 @@ func FetchUrlAndWriteOnFile() (filename string, n int64, err error) {
 	defer func() {
 		err = f.Close()
 	}()
-
 	return local, n, err
+}
+func RunPanicDefer() {
+	defer printStack()
+	f(5)
+}
+func f(x int) {
+	fmt.Printf("f(%d)\n", x+0/x)
+	if x == 0 {
+		panic("Imposible calculation...")
+	}
+	defer fmt.Printf("defer %d\n", x)
+
+	f(x - 1)
+}
+
+func printStack() {
+	var buf [4096]byte
+	n := runtime.Stack(buf[:], false)
+	os.Stdout.Write(buf[:n])
 }

@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	deferred.FetchUrlAndWriteOnFile()
+	deferred.RunPanicDefer()
 }
