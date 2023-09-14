@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/anonymous"
+	variadicfuncs "github.com/Artemides/problems/fundamentals/variadicFuncs"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	anonymous.TestCicle()
+	variadicfuncs.ElementsByTagName("img", "h1", "h2", "a")
 }
