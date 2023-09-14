@@ -90,8 +90,9 @@ func FetchUrlAndWriteOnFile() (filename string, n int64, err error) {
 	//dont't defer function which report erros after its return
 	// wrong: defer f.Close()
 	n, err = io.Copy(f, response.Body)
-	if closeErr := f.Close(); closeErr != nil {
-		err = closeErr
-	}
+	defer func() {
+		err = f.Close()
+	}()
+
 	return local, n, err
 }
