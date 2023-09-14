@@ -1,8 +1,11 @@
 package deferred
 
 import (
+	"io"
 	"log"
+	"net/http"
 	"os"
+	"path"
 	"time"
 )
 
@@ -66,4 +69,29 @@ func doSomethingWithFile(filename string) error {
 	defer f.Close()
 	//do somethink with file
 	return nil
+}
+
+func FetchUrlAndWriteOnFile() (filename string, n int64, err error) {
+	const url = "https://golang.org"
+	response, err := http.Get(url)
+	if err != nil {
+		return "", 0, err
+	}
+	defer response.Body.Close()
+
+	local := path.Base(response.Request.URL.Path)
+	if local == "/" {
+		local = "index.html"
+	}
+	f, err := os.Create(local)
+	if err != nil {
+		return "", 0, err
+	}
+	//dont't defer function which report erros after its return
+	// wrong: defer f.Close()
+	n, err = io.Copy(f, response.Body)
+	if closeErr := f.Close(); closeErr != nil {
+		err = closeErr
+	}
+	return local, n, err
 }
