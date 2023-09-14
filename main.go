@@ -1,7 +1,7 @@
 package main
 
 import (
-	variadicfuncs "github.com/Artemides/problems/fundamentals/variadicFuncs"
+	"github.com/Artemides/problems/fundamentals/deferred"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	variadicfuncs.ElementsByTagName("img", "h1", "h2", "a")
+	deferred.BigSlowOperation()
 }
