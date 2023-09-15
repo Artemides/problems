@@ -82,6 +82,18 @@ func (set *IntSet) String() string {
 	return buf.String()
 }
 
+func (set *IntSet) Clear() {
+	set.words = set.words[:0]
+}
+func (set *IntSet) Copy() *IntSet {
+	newSet := IntSet{
+		words: make([]uint64, len(set.words), cap(set.words)),
+	}
+	copy(newSet.words, set.words)
+
+	return &newSet
+}
+
 func RunSet() {
 	var set IntSet
 	var set2 IntSet
@@ -96,5 +108,10 @@ func RunSet() {
 	fmt.Println(set.Len())
 	set.Remove(62)
 	fmt.Println(set.String())
+	// set.Clear()
+	set.Add(99)
+	fmt.Println("Set: \t", set.String())
+	set3 := set.Copy()
+	fmt.Println("Set3: \t", set3.String())
 
 }
