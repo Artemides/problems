@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/deferred"
+	"github.com/Artemides/problems/fundamentals/oop/methods"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	deferred.RunPanicDefer()
+	methods.RunSet()
 }
