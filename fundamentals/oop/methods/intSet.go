@@ -22,6 +22,12 @@ func (s *IntSet) Add(x int) {
 	s.words[word] |= 1 << bit
 }
 
+func (set *IntSet) AddAll(ints ...int) {
+	for _, num := range ints {
+		set.Add(num)
+	}
+}
+
 func (s *IntSet) Union(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
@@ -112,6 +118,7 @@ func RunSet() {
 	set.Add(99)
 	fmt.Println("Set: \t", set.String())
 	set3 := set.Copy()
+	set3.AddAll(133, 1564, 2312, 10)
 	fmt.Println("Set3: \t", set3.String())
 
 }
