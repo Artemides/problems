@@ -28,13 +28,25 @@ func (set *IntSet) AddAll(ints ...int) {
 	}
 }
 
+func (s *IntSet) IntersectWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i >= len(s.words) {
+			continue
+		}
+		s.words[i] &= tword
+
+	}
+}
+
 func (s *IntSet) Union(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
 			s.words[i] |= tword
-		} else {
-			s.words = append(s.words, tword)
+			continue
 		}
+
+		s.words = append(s.words, tword)
+
 	}
 }
 
@@ -103,22 +115,10 @@ func (set *IntSet) Copy() *IntSet {
 func RunSet() {
 	var set IntSet
 	var set2 IntSet
-	set2.Add(62)
-	set2.Add(149)
-	set.Add(62)
-	set.Add(63)
-	set.Add(98)
-	set.Add(182)
-	set.Union(&set2)
-	fmt.Println(set.String())
-	fmt.Println(set.Len())
-	set.Remove(62)
-	fmt.Println(set.String())
-	// set.Clear()
-	set.Add(99)
-	fmt.Println("Set: \t", set.String())
-	set3 := set.Copy()
-	set3.AddAll(133, 1564, 2312, 10)
-	fmt.Println("Set3: \t", set3.String())
-
+	set.AddAll(65, 11, 76, 112, 165)
+	fmt.Println("Set 1: ", set.String())
+	set2.AddAll(45, 76, 11, 435, 236)
+	fmt.Println("Set 2: ", set2.String())
+	set.IntersectWith(&set2)
+	fmt.Println("S1 & S2:  ", set.String())
 }
