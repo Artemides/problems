@@ -38,6 +38,15 @@ func (s *IntSet) IntersectWith(t *IntSet) {
 	}
 }
 
+func (s *IntSet) DifferenceWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i >= len(s.words) {
+			continue
+		}
+		s.words[i] &^= tword
+
+	}
+}
 func (s *IntSet) Union(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
@@ -117,8 +126,8 @@ func RunSet() {
 	var set2 IntSet
 	set.AddAll(65, 11, 76, 112, 165)
 	fmt.Println("Set 1: ", set.String())
-	set2.AddAll(45, 76, 11, 435, 236)
+	set2.AddAll(45, 76, 11, 435, 236, 165)
 	fmt.Println("Set 2: ", set2.String())
-	set.IntersectWith(&set2)
+	set.DifferenceWith(&set2)
 	fmt.Println("S1 & S2:  ", set.String())
 }
