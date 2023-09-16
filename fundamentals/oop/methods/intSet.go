@@ -98,6 +98,27 @@ func (set *IntSet) Len() uint {
 	return len
 }
 
+func (set *IntSet) Elems() []int {
+	len := set.Len()
+	elems := make([]int, len)
+	elIdx := 0
+	for i, word := range set.words {
+		if word == 0 {
+			continue
+		}
+
+		for j := 0; j < 64; j++ {
+			if word&(1<<j) == 0 {
+				continue
+			}
+			elems[elIdx] = i*64 + j
+			elIdx++
+		}
+	}
+
+	return elems
+}
+
 func (set *IntSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
@@ -135,11 +156,9 @@ func (set *IntSet) Copy() *IntSet {
 
 func RunSet() {
 	var set IntSet
-	var set2 IntSet
 	set.AddAll(65, 11, 76, 112, 165)
 	fmt.Println("Set 1: ", set.String())
-	set2.AddAll(45, 76, 11, 435, 236, 165)
-	fmt.Println("Set 2: ", set2.String())
-	set.SymetricDiferenceWith(&set2)
-	fmt.Println("S1 & S2:  ", set.String())
+
+	setElems := set.Elems()
+	fmt.Println("Set 1 Elems: ", setElems)
 }
