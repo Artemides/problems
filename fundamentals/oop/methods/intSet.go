@@ -47,6 +47,18 @@ func (s *IntSet) DifferenceWith(t *IntSet) {
 
 	}
 }
+
+func (s *IntSet) SymetricDiferenceWith(t *IntSet) {
+	for i, tword := range t.words {
+		if i >= len(s.words) {
+			s.words = append(s.words, tword)
+			continue
+		}
+		s.words[i] ^= tword
+
+	}
+}
+
 func (s *IntSet) Union(t *IntSet) {
 	for i, tword := range t.words {
 		if i < len(s.words) {
@@ -128,6 +140,6 @@ func RunSet() {
 	fmt.Println("Set 1: ", set.String())
 	set2.AddAll(45, 76, 11, 435, 236, 165)
 	fmt.Println("Set 2: ", set2.String())
-	set.DifferenceWith(&set2)
+	set.SymetricDiferenceWith(&set2)
 	fmt.Println("S1 & S2:  ", set.String())
 }
