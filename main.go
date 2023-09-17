@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/oop/methods"
+	"github.com/Artemides/problems/fundamentals/oop/interfaces"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	methods.RunSet()
+	interfaces.RunReader()
 }
