@@ -156,6 +156,7 @@ func (set *IntSet) Copy() *IntSet {
 
 func RunSet() {
 	var set IntSet
+
 	set.AddAll(65, 11, 76, 112, 165)
 	fmt.Println("Set 1: ", set.String())
 

@@ -62,7 +62,6 @@ func TrustedHTML() {
 		</html>
 	`
 	template := template.Must(template.New("trustedHtml").Parse(tmpl))
-	template.Tree.Root.String()
 	if err := template.Execute(os.Stdout, data); err != nil {
 		log.Fatal(err)
 	}
