@@ -29,3 +29,26 @@ func RunInterfaces() {
 	fmt.Printf("w value %T\n", w)
 
 }
+
+func NilInterfaces() {
+	const debug = false
+	// var buf *bytes.Buffer
+	var buf io.Writer
+
+	if debug {
+		buf = new(bytes.Buffer)
+	}
+
+	f(buf)
+
+	if debug {
+		fmt.Println("Debug")
+	}
+
+}
+
+func f(out io.Writer) {
+	if out != nil {
+		out.Write([]byte("done!\n"))
+	}
+}
