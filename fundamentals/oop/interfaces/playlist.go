@@ -16,21 +16,117 @@ type Track struct {
 	Length time.Duration
 }
 
+// Create a slice of 10 tracks
 var tracks = []*Track{
-	{"Go", "Delilah", "From the Roots Up", 2012, length("3m38s")},
-	{"Go", "Moby", "Moby", 1992, length("3m37s")},
-	{"Go Ahead", "Alicia Keys", "As I Am", 2007, length("4m36s")},
-	{"Ready 2 Go", "Martin Solveig", "Smash", 2011, length("4m24s")},
+	{
+		Title:  "Closer",
+		Artist: "The Chainsmokers",
+		Album:  "Collage",
+		Year:   2016,
+		Length: 244 * time.Second,
+	},
+	{
+		Title:  "Closer",
+		Artist: "Marshmellow",
+		Album:  "Forever",
+		Year:   2018,
+		Length: 244 * time.Second,
+	},
+	{
+		Title:  "Don't Let Me Down",
+		Artist: "The Chainsmokers",
+		Album:  "Collage",
+		Year:   2016,
+		Length: 208 * time.Second,
+	},
+	{
+		Title:  "Something Just Like This",
+		Artist: "The Chainsmokers",
+		Album:  "Memories...Do Not Open",
+		Year:   2017,
+		Length: 247 * time.Second,
+	},
+	{
+		Title:  "Paris",
+		Artist: "The Chainsmokers",
+		Album:  "Memories...Do Not Open",
+		Year:   2017,
+		Length: 221 * time.Second,
+	},
+	{
+		Title:  "Paris",
+		Artist: "Dua Lipa",
+		Album:  "Journey",
+		Year:   2017,
+		Length: 221 * time.Second,
+	},
+	{
+		Title:  "Roses",
+		Artist: "The Chainsmokers",
+		Album:  "Bouquet",
+		Year:   2015,
+		Length: 237 * time.Second,
+	},
+	{
+		Title:  "Sick Boy",
+		Artist: "The Chainsmokers",
+		Album:  "Sick Boy",
+		Year:   2018,
+		Length: 221 * time.Second,
+	},
+	{
+		Title:  "All We Know",
+		Artist: "The Chainsmokers",
+		Album:  "Collage",
+		Year:   2016,
+		Length: 194 * time.Second,
+	},
+	{
+		Title:  "Selfie",
+		Artist: "The Chainsmokers",
+		Album:  "Non-album single",
+		Year:   2014,
+		Length: 183 * time.Second,
+	},
+	{
+		Title:  "This Feeling",
+		Artist: "The Chainsmokers",
+		Album:  "Sick Boy",
+		Year:   2018,
+		Length: 197 * time.Second,
+	},
+	{
+		Title:  "Push My Luck",
+		Artist: "The Chainsmokers",
+		Album:  "World War Joy",
+		Year:   2019,
+		Length: 212 * time.Second,
+	},
 }
 
-func length(s string) time.Duration {
-	duration, err := time.ParseDuration(s)
-	if err != nil {
-		panic(s)
-	}
-	return duration
+// func length(duration string) time.Duration {
+// 	timeDuration, err := time.ParseDuration(duration)
+// 	if err != nil {
+// 		panic(duration)
+// 	}
 
+// 	return timeDuration
+// }
+
+type byDuration []*Track
+
+func (tracks byDuration) Len() int           { return len(tracks) }
+func (tracks byDuration) Swap(i, j int)      { tracks[i], tracks[j] = tracks[j], tracks[i] }
+func (tracks byDuration) Less(i, j int) bool { return tracks[i].Length < tracks[j].Length }
+
+type customSort struct {
+	tracks []*Track
+	less   func(a, b *Track) bool
 }
+
+func (c customSort) Len() int           { return len(c.tracks) }
+func (c customSort) Swap(i, j int)      { c.tracks[i], c.tracks[j] = c.tracks[j], c.tracks[i] }
+func (c customSort) Less(i, j int) bool { return c.less(c.tracks[i], c.tracks[j]) }
 
 func printTracks(tracks []*Track) {
 	format := "%v\t%v\t%v\t%v\t%v\t\n"
@@ -44,14 +140,21 @@ func printTracks(tracks []*Track) {
 	tw.Flush()
 }
 
-type byArtist []*Track
+func PlaylistMain() {
+	sort.Sort(byDuration(tracks))
+	sort.Sort(customSort{tracks, func(tA, tB *Track) bool {
+		if tA.Title != tB.Title {
+			return tA.Title < tB.Title
+		}
 
-func (a byArtist) Len() int           { return len(a) }
-func (a byArtist) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a byArtist) Less(i, j int) bool { return a[i].Year < a[j].Year }
+		if tA.Artist != tB.Artist {
+			return tA.Artist < tB.Artist
+		}
 
-func Playlist() {
-	// sort.Sort(byArtist(tracks))
-	sort.Sort(sort.Reverse(byArtist(tracks)))
+		if tA.Length != tB.Length {
+			return tA.Length < tB.Length
+		}
+		return false
+	}})
 	printTracks(tracks)
 }
