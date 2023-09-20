@@ -17,7 +17,7 @@ type Track struct {
 }
 
 // Create a slice of 10 tracks
-var tracks = []*Track{
+var Tracks = []*Track{
 	{
 		Title:  "Closer",
 		Artist: "The Chainsmokers",
@@ -141,8 +141,8 @@ func printTracks(tracks []*Track) {
 }
 
 func PlaylistMain() {
-	sort.Sort(byDuration(tracks))
-	sort.Sort(customSort{tracks, func(tA, tB *Track) bool {
+	sort.Sort(byDuration(Tracks))
+	sort.Sort(customSort{Tracks, func(tA, tB *Track) bool {
 		if tA.Title != tB.Title {
 			return tA.Title < tB.Title
 		}
@@ -156,5 +156,5 @@ func PlaylistMain() {
 		}
 		return false
 	}})
-	printTracks(tracks)
+	printTracks(Tracks)
 }
