@@ -44,9 +44,19 @@ func (db database) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (db database) list(w http.ResponseWriter, r *http.Request) {
+	var items []Item
 	for item, price := range db {
-		fmt.Fprintf(w, "%s : %s\n", item, price)
+		items = append(items, Item{item, price})
 	}
+
+	json, err := json.Marshal(items)
+	if err != nil {
+		http.Error(w, "error encoding items as json", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(json)
 }
 
 func (db database) price(w http.ResponseWriter, r *http.Request) {
@@ -129,6 +139,41 @@ func (db database) Create(w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
+func (db database) readHandler(w http.ResponseWriter, r *http.Request) {
+
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	params := r.URL.Query()
+	item := params.Get("item")
+	price, exists := db.exists(item)
+	if !exists {
+		msg := fmt.Sprintf("item: %s. not found", item)
+		http.Error(w, msg, http.StatusOK)
+		return
+	}
+	var response Item = Item{item, price}
+	json, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "error encoding Item as json", http.StatusOK)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(json)
+
+}
+
+func (db database) exists(item string) (dollars, bool) {
+	price, ok := db[item]
+	if !ok {
+		return 0, ok
+	}
+	return price, ok
+}
+
 func RunHTTP() {
 	log.Fatal(http.ListenAndServe(":3000", db))
 }
@@ -143,6 +188,6 @@ func RunHandlerMux() {
 	http.HandleFunc("/list", db.list)
 	http.HandleFunc("/price", db.price)
 	http.HandleFunc("/create", db.Create)
-
+	http.HandleFunc("/read", db.readHandler)
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
