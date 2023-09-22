@@ -61,29 +61,40 @@
         border: none;
         cursor: pointer;
         transition: background-color 300ms;
+        background-color: rgb(255, 255, 255);
       }
-      button:hover {
+      .delete-item-btn:hover {
+        background-color: rgb(232, 112, 110);
+      }
+      .edit-item-btn:hover {
+        background-color: rgb(230, 228, 110);
+      }
+      .add-item-btn {
+        padding: 0.25rem 0.55rem;
+      }
+      .add-item-btn:hover {
         background-color: rgb(110, 230, 134);
       }
-      form {
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-      }
-      form input {
-        padding: 8px;
-        background-color: #3a3838;
+
+      table input {
+        padding: 10px;
+        background-color: rgb(50, 52, 50);
         outline: none;
         border: none;
-        border-radius: 4px;
+        border-radius: 8px;
         min-width: 200px;
         color: white;
+      }
+      table input[type="number"] {
+        min-width: auto;
+        max-width: 100px;
       }
       table {
         background-color: rgb(83, 87, 83);
         border-radius: 8px;
         color: #d7d7d7;
       }
+
       table th {
         background-color: rgb(50, 52, 50);
       }
@@ -91,9 +102,18 @@
       table td {
         padding: 0.5rem 2rem;
         border-radius: 8px;
+        text-align: center;
+        transition: width 300ms;
+      }
+      tr {
+        transition: height 300ms;
       }
       tr:hover {
         background-color: rgb(69, 72, 69);
+      }
+
+      .bg-gradient {
+        position: absolute;
       }
     </style>
   </head>
@@ -110,102 +130,228 @@
                 <th>#</th>
                 <th>Item</th>
                 <th>Price</th>
+                <th>-</th>
+                <th>
+                  <button id="add-item-btn-tbl" class="add-item-btn">+</button>
+                </th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </section>
-        <div class="create-container container">
-          <h3>Create a Product</h3>
-          <form id="create-item-form">
-            <div class="item-section">
-              <input type="text" name="item" id="item" placeholder="Item" />
-            </div>
-            <div class="price-section">
-              <input type="text" name="price" id="price" placeholder="price" />
-            </div>
-            <button type="submit">Create</button>
-          </form>
-        </div>
-        <div class="update-container container">
-          <h3>Update a Product</h3>
-          <form id="update-item-form">
-            <div class="item-section">
-              <label for="item"></label>
-              <input type="text" name="item" id="item" placeholder="Item" />
-            </div>
-            <div class="price-section">
-              <label for="price"></label>
-
-              <input type="text" name="price" id="price" placeholder="price" />
-            </div>
-
-            <button type="submit">Update</button>
-          </form>
-        </div>
       </div>
     </main>
     <script>
+      const API_URL = "http://localhost:3000/";
       const form = document.getElementById("create-item-form");
-      console.log("fetching");
+      const table = document.getElementById("table-item");
+      const tbody = table.querySelector("tbody");
+      const addItemBtn = document.getElementById("add-item-btn-tbl");
 
-      form.addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        const formDada = new FormData(form);
-
-        const body = {
-          item: formDada.get("item"),
-          price: parseFloat(formDada.get("price")),
-        };
-        console.log(Object.fromEntries(formDada));
-        fetch("http://localhost:3000/create", {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(body),
-          method: "POST",
-        })
-          .then((res) => {
-            if (!res.ok) {
-              console.error("Post Failed");
-              return;
-            }
-            return res.json;
-          })
-          .then((data) => {
-            console.log(data);
-          })
-          .catch((err) => console.error(err));
+      addItemBtn.addEventListener("click", () => {
+        addItemRow();
       });
 
       async function listItems() {
-        const table = document.getElementById("table-item");
-        const tbody = table.querySelector("tbody");
         const list = await getItems();
         list.map((item, idx) => {
           const row = document.createElement("tr");
 
           const itemNumberCell = document.createElement("td");
-          itemNumberCell.textContent = idx;
+          itemNumberCell.textContent = idx + 1;
           row.appendChild(itemNumberCell);
-
           const columns = Object.keys(item);
           for (const column of columns) {
             const td = document.createElement("td");
             td.textContent = item[column];
+            td.id = `td-${item.item}${
+              item.item == item[column] ? "" : "-" + item[column]
+            }`;
             row.appendChild(td);
           }
+          //Edit Button
+          const editButton = document.createElement("button");
+          const editData = document.createElement("td");
+          editButton.innerText = "✏️";
+          editButton.classList.add("edit-item-btn");
+          editButton.id = `edit-${item.item}-btn`;
+          editButton.onclick = () => editRow(item);
+          editData.appendChild(editButton);
+          //remove button
+          const deleteButton = document.createElement("button");
+          const deleteData = document.createElement("td");
+          deleteButton.innerHTML = "⛔";
+          deleteButton.classList.add("delete-item-btn");
+          deleteButton.id = `delete-${item.item}-btn`;
+
+          deleteData.appendChild(deleteButton);
+          deleteButton.onclick = () => deleteItem(item.item);
+
+          //
+          row.appendChild(editData);
+          row.appendChild(deleteData);
           tbody.appendChild(row);
         });
       }
 
       async function getItems() {
         const response = await fetch("http://localhost:3000/list");
-        console.log("body");
 
         if (!response.ok) {
           return [];
+        }
+        const data = await response.json();
+        return data;
+      }
+
+      async function deleteItem(item) {
+        console.log("removing");
+        const response = await fetch(`${API_URL}delete?item=${item}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) {
+          return;
+        }
+
+        window.location.reload();
+      }
+
+      function addItemRow() {
+        const rows = tbody.querySelectorAll("tr").length;
+        const row = document.createElement("tr");
+        const [indexData, itemData, priceData, createData, cancelData] = Array(
+          5
+        )
+          .fill(null)
+          .map(() => document.createElement("td"));
+        const itemInput = document.createElement("input");
+        itemInput.type = "text";
+        itemInput.placeholder = "Item";
+        itemInput.id = "add-item-input";
+
+        const priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.placeholder = "Price";
+        priceInput.id = "add-price-input";
+
+        const createBtn = document.createElement("button");
+        createBtn.innerText = "✅";
+        createBtn.classList.add("add-item-btn");
+        createBtn.onclick = () =>
+          createItem(() => {
+            tbody.removeChild(row);
+          });
+
+        const cancelBtn = document.createElement("button");
+        cancelBtn.innerText = "❌";
+        cancelBtn.classList.add("delete-item-btn");
+        cancelBtn.onclick = () => {
+          tbody.removeChild(row);
+        };
+        indexData.innerText = `?`;
+        itemData.appendChild(itemInput);
+        priceData.appendChild(priceInput);
+        createData.appendChild(createBtn);
+        cancelData.appendChild(cancelBtn);
+        row.append(indexData, itemData, priceData, createData, cancelData);
+
+        tbody.appendChild(row);
+      }
+
+      async function createItem(cb) {
+        const itemInput = document.getElementById("add-item-input");
+        const priceInput = document.getElementById("add-price-input");
+        const item = itemInput.value;
+        const price = parseFloat(priceInput.value);
+        const body = { item, price };
+
+        const response = await fetch(`${API_URL}create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        console.log({ body });
+        if (!response.ok) {
+          console.error(response.statusText);
+          return;
+        }
+
+        cb();
+        window.location.reload();
+      }
+
+      async function editRow(item) {
+        const itemData = document.getElementById(`td-${item.item}`);
+        const priceData = document.getElementById(
+          `td-${item.item}-${item.price}`
+        );
+        const editBtn = document.getElementById(`edit-${item.item}-btn`);
+        const deleteBtn = document.getElementById(`delete-${item.item}-btn`);
+
+        itemData.innerText = "";
+        priceData.innerText = "";
+
+        editBtn.innerText = "✅";
+        const editFunc = editBtn.onclick;
+        editBtn.onclick = async () => {
+          await callEditAPI();
+          restoreRow();
+        };
+
+        deleteBtn.innerText = "❌";
+        const deleteFunc = deleteBtn.onclick;
+        deleteBtn.onclick = () => {
+          itemData.innerText = item.item;
+          priceData.innerText = item.price;
+          restoreRow();
+        };
+        const itemInput = document.createElement("input");
+        itemInput.type = "text";
+        itemInput.placeholder = "Item";
+        itemInput.id = "edit-item-input";
+        itemInput.value = item.item;
+
+        const priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.placeholder = "Price";
+        priceInput.id = "edit-price-input";
+        priceInput.value = item.price;
+
+        function removeInputs() {
+          itemInput.remove();
+          priceInput.remove();
+        }
+
+        async function callEditAPI() {
+          const data = {
+            item: itemInput.value,
+            price: parseFloat(priceInput.value),
+          };
+          const updatedData = await editItem(data);
+          itemData.innerText = updatedData.item;
+          priceData.innerText = updatedData.price;
+        }
+        function restoreRow() {
+          removeInputs();
+          deleteBtn.innerText = "⛔";
+          deleteBtn.onclick = deleteFunc;
+          editBtn.innerText = "✏️";
+          editBtn.onclick = editFunc;
+        }
+
+        itemData.appendChild(itemInput);
+        priceData.appendChild(priceInput);
+      }
+
+      async function editItem(item) {
+        const response = await fetch(
+          `${API_URL}update?item=${item.item}&price=${item.price}`,
+          { method: "PUT" }
+        );
+        if (!response.ok) {
+          console.error(`update ${item.item} error`);
         }
         const data = await response.json();
         return data;

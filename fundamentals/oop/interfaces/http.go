@@ -199,7 +199,7 @@ func (db database) updateHandler(w http.ResponseWriter, r *http.Request) {
 	_, exists := db.exists(item)
 	if !exists {
 		msg := fmt.Sprintf("item: %s. not found", item)
-		http.Error(w, msg, http.StatusOK)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 
