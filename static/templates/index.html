@@ -37,8 +37,15 @@
       }
 
       .main-container {
-        background-color: #0b0a0a;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
         padding: 2rem 1rem;
+        color: white;
+      }
+      .container {
+        padding: 2rem 1rem;
+        background-color: #0b0a0a;
         border-radius: 0.5rem;
         color: white;
       }
@@ -72,6 +79,22 @@
         min-width: 200px;
         color: white;
       }
+      table {
+        background-color: rgb(83, 87, 83);
+        border-radius: 8px;
+        color: #d7d7d7;
+      }
+      table th {
+        background-color: rgb(50, 52, 50);
+      }
+      table th,
+      table td {
+        padding: 0.5rem 2rem;
+        border-radius: 8px;
+      }
+      tr:hover {
+        background-color: rgb(69, 72, 69);
+      }
     </style>
   </head>
   <body>
@@ -80,20 +103,46 @@
     </header>
     <main>
       <div class="main-container">
-        <h3>Create a Product</h3>
-        <form id="create-item-form">
-          <div class="item-section">
-            <label for="item"></label>
-            <input type="text" name="item" id="item" placeholder="Item" />
-          </div>
-          <div class="price-section">
-            <label for="price"></label>
+        <section class="items">
+          <table id="table-item">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Item</th>
+                <th>Price</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </section>
+        <div class="create-container container">
+          <h3>Create a Product</h3>
+          <form id="create-item-form">
+            <div class="item-section">
+              <input type="text" name="item" id="item" placeholder="Item" />
+            </div>
+            <div class="price-section">
+              <input type="text" name="price" id="price" placeholder="price" />
+            </div>
+            <button type="submit">Create</button>
+          </form>
+        </div>
+        <div class="update-container container">
+          <h3>Update a Product</h3>
+          <form id="update-item-form">
+            <div class="item-section">
+              <label for="item"></label>
+              <input type="text" name="item" id="item" placeholder="Item" />
+            </div>
+            <div class="price-section">
+              <label for="price"></label>
 
-            <input type="text" name="price" id="price" placeholder="price" />
-          </div>
+              <input type="text" name="price" id="price" placeholder="price" />
+            </div>
 
-          <button type="submit">Create</button>
-        </form>
+            <button type="submit">Update</button>
+          </form>
+        </div>
       </div>
     </main>
     <script>
@@ -128,6 +177,42 @@
             console.log(data);
           })
           .catch((err) => console.error(err));
+      });
+
+      async function listItems() {
+        const table = document.getElementById("table-item");
+        const tbody = table.querySelector("tbody");
+        const list = await getItems();
+        list.map((item, idx) => {
+          const row = document.createElement("tr");
+
+          const itemNumberCell = document.createElement("td");
+          itemNumberCell.textContent = idx;
+          row.appendChild(itemNumberCell);
+
+          const columns = Object.keys(item);
+          for (const column of columns) {
+            const td = document.createElement("td");
+            td.textContent = item[column];
+            row.appendChild(td);
+          }
+          tbody.appendChild(row);
+        });
+      }
+
+      async function getItems() {
+        const response = await fetch("http://localhost:3000/list");
+        console.log("body");
+
+        if (!response.ok) {
+          return [];
+        }
+        const data = await response.json();
+        return data;
+      }
+
+      window.addEventListener("load", async () => {
+        await listItems();
       });
     </script>
   </body>

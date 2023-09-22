@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type dollars float32
@@ -166,6 +167,53 @@ func (db database) readHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func (db database) deleteHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	params := r.URL.Query()
+	item := params.Get("item")
+	_, exists := db.exists(item)
+	if !exists {
+		msg := fmt.Sprintf("item: %s. not found", item)
+		http.Error(w, msg, http.StatusOK)
+		return
+	}
+
+	delete(db, item)
+	w.WriteHeader(http.StatusOK)
+}
+
+func (db database) updateHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPut {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	params := r.URL.Query()
+	item := params.Get("item")
+	price, _ := strconv.ParseFloat(params.Get("price"), 32)
+
+	_, exists := db.exists(item)
+	if !exists {
+		msg := fmt.Sprintf("item: %s. not found", item)
+		http.Error(w, msg, http.StatusOK)
+		return
+	}
+
+	db[item] = dollars(price)
+	var response Item = Item{item, dollars(price)}
+	json, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "error encoding Item as json", http.StatusOK)
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(json)
+}
+
 func (db database) exists(item string) (dollars, bool) {
 	price, ok := db[item]
 	if !ok {
@@ -189,5 +237,8 @@ func RunHandlerMux() {
 	http.HandleFunc("/price", db.price)
 	http.HandleFunc("/create", db.Create)
 	http.HandleFunc("/read", db.readHandler)
+	http.HandleFunc("/delete", db.deleteHandler)
+	http.HandleFunc("/update", db.updateHandler)
+
 	log.Fatal(http.ListenAndServe(":3000", nil))
 }
