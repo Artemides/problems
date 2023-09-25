@@ -17,5 +17,5 @@ func main() {
 	// fundamentals.Fetch()
 	//138 Links
 	// interfaces.DecodeXML()
-	concurrency.RunSpinner()
+	concurrency.ClockServerMain() //pid 3102
 }
