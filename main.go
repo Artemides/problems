@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/oop/interfaces"
+	"github.com/Artemides/problems/fundamentals/concurrency"
 )
 
 func main() {
@@ -16,5 +16,6 @@ func main() {
 	// maps.RuneCount()\
 	// fundamentals.Fetch()
 	//138 Links
-	interfaces.RunAssertion()
+	// interfaces.DecodeXML()
+	concurrency.RunSpinner()
 }
