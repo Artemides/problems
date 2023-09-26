@@ -1,6 +1,8 @@
 package concurrency
 
 import (
+	"flag"
+	"fmt"
 	"io"
 	"log"
 	"net"
@@ -8,11 +10,14 @@ import (
 )
 
 func ClockServerMain() {
-	listener, err := net.Listen("tcp", "127.0.0.1:3000")
+	var port = flag.String("port", "8000", "port number")
+	flag.Parse()
+	listener, err := net.Listen("tcp", "localhost:"+*port)
 	if err != nil {
 		log.Fatal(err)
 	}
 
+	fmt.Println("Listenning on : 127.0.0.1:" + *port)
 	for {
 		cnn, err := listener.Accept()
 		if err != nil {
@@ -20,12 +25,12 @@ func ClockServerMain() {
 			continue
 		}
 
-		handleConn(cnn)
+		go handleConn(cnn)
 	}
 
 }
+
 func handleConn(cnn net.Conn) {
-	defer cnn.Close()
 	for {
 		_, err := io.WriteString(cnn, time.Now().Format("15:04:05\n"))
 		if err != nil {
