@@ -15,7 +15,7 @@ func main() {
 	// fundamentals.Fetch()
 	//138 Links
 	// interfaces.DecodeXML()
-	concurrency.EchoClient() //pid 11944
+	concurrency.PipelineMain() //pid 11944
 
 	// $ TZ=US/Eastern    ./exe/clock-server -port 8010 & 17714
 	// $ TZ=Asia/Tokyo    ./exe/clock-server -port 8020 & 17761

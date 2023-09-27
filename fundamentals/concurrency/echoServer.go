@@ -3,9 +3,11 @@ package concurrency
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"log"
 	"net"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 )
@@ -55,4 +57,33 @@ func EchoClient() {
 	defer cnn.Close()
 	go handleWrite(os.Stdout, cnn)
 	handleWrite(cnn, os.Stdin)
+}
+func EchoClientWait() {
+	cnn, err := net.Dial("tcp", "localhost:3000")
+	if err != nil {
+		log.Fatalf("Connection with %s , err: %s", cnn.LocalAddr().Network(), err)
+	}
+
+	done := make(chan interface{})
+	signChan := make(chan os.Signal, 1)
+	signal.Notify(signChan, os.Interrupt)
+
+	go func() {
+		io.Copy(os.Stdout, cnn)
+		fmt.Println("DONE")
+		done <- struct{}{}
+	}()
+
+	go handleWrite(cnn, os.Stdin)
+
+	<-signChan
+	if tcpCnn, ok := cnn.(*net.TCPConn); ok {
+		fmt.Println("CLOSE WRITE")
+		tcpCnn.CloseWrite()
+	} else {
+		fmt.Println("CLOSE ALL")
+		cnn.Close()
+	}
+	fmt.Println("closed")
+	<-done //wait for the go routine to complete its job
 }
