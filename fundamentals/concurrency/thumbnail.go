@@ -16,6 +16,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 )
 
 // Image returns a thumbnail-size version of src.
@@ -128,4 +129,60 @@ func ThumbnailImagesParallel2(filenames []string) (thumbfiles []string, err erro
 		thumbfiles = append(thumbfiles, it.thumbfile)
 	}
 	return thumbfiles, nil
+}
+
+func ThumbnailImagesWait(filenames <-chan string) int64 {
+	sizes := make(chan int64)
+	var wg sync.WaitGroup
+
+	for filename := range filenames {
+		wg.Add(1)
+		go func(f string) {
+			defer wg.Done()
+
+			thumbfile, err := ImageFile(f)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			info, _ := os.Stat(thumbfile)
+			sizes <- info.Size()
+
+		}(filename)
+	}
+
+	go func() {
+		wg.Wait()
+		close(sizes)
+	}()
+
+	var total int64
+	for size := range sizes {
+		total += size
+	}
+	return total
+
+}
+
+func ThumbnailMain() {
+
+	filenames := []string{"ada.jpeg", "btc.jpeg", "sol.jpeg", "xrp.jpeg", "tether.jpeg"}
+	filesChan := make(chan string)
+	var wg sync.WaitGroup
+
+	for _, filename := range filenames {
+		wg.Add(1)
+		go func(f string) {
+			defer wg.Done()
+			fmt.Println("f", f)
+			filesChan <- "./assets/" + f
+		}(filename)
+	}
+	go func() {
+		wg.Wait()
+		close(filesChan)
+	}()
+
+	thumbFilesSize := ThumbnailImagesWait(filesChan)
+	fmt.Println("total sizes: ", thumbFilesSize)
 }
