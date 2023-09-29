@@ -1,6 +1,7 @@
 package concurrency
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -68,9 +69,25 @@ func concurrentCrawlerV3() {
 	unseen := make(chan string)
 	seen := make(map[string]bool)
 
-	go func() { worklist <- os.Args[1:] }()
+	depthLimit := flag.Uint64("depth", 20, "concurrent reachable url")
+	flag.Parse()
+	setFlag := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == "depth" {
+			setFlag = true
+		}
+	})
 
-	for i := 0; i < 20; i++ {
+	go func() {
+		fmt.Println("parsed: ", flag.Parsed())
+		if setFlag {
+			worklist <- os.Args[2:]
+			return
+		}
+		worklist <- os.Args[1:]
+	}()
+
+	for i := uint64(0); i < *depthLimit; i++ {
 		go func() {
 			for link := range unseen {
 				go func(link string) {
