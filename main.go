@@ -1,6 +1,8 @@
 package main
 
-import "github.com/Artemides/problems/fundamentals/plot"
+import (
+	"github.com/Artemides/problems/fundamentals/concurrency"
+)
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -16,5 +18,5 @@ func main() {
 	//138 Links
 	// interfaces.DecodeXML()
 
-	plot.Render() //368.5545ms
+	concurrency.CrawlerMain()
 }
