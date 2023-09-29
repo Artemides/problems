@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -25,12 +26,47 @@ func handleEchoConn(cnn net.Conn) {
 	input := bufio.NewScanner(cnn)
 
 	for input.Scan() {
-		go echo(cnn, input.Text(), 2*time.Second)
+		go echo(cnn, input.Text(), 1*time.Second)
 	}
+
 	cnn.Close()
 }
+func handleEchoConnV2(cnn net.Conn) {
+	input := bufio.NewScanner(cnn)
+	readlines := make(chan string)
+	var wg sync.WaitGroup
 
+	go func() {
+		defer close(readlines)
+		for input.Scan() {
+			readlines <- input.Text()
+		}
+	}()
+
+	for line := range readlines {
+		wg.Add(1)
+		go func(ln string) {
+			defer wg.Done()
+			echo(cnn, ln, 1*time.Second)
+		}(line)
+	}
+	fmt.Println("waiting")
+	wg.Wait()
+	fmt.Println("continue")
+
+	if tcpCnn, ok := cnn.(*net.TCPConn); ok {
+		fmt.Println("Close Write")
+		tcpCnn.CloseWrite()
+		return
+	}
+
+	fmt.Println("Close All")
+	cnn.Close()
+}
 func EchoServerMain() {
+
+}
+func EchoServer() {
 	listener, err := net.Listen("tcp", "localhost:3000")
 	if err != nil {
 		log.Fatal(err)
@@ -48,6 +84,24 @@ func EchoServerMain() {
 	}
 }
 
+// EchoServerV2 Counts the number of clientes connected to it
+func EchoServerV2() {
+	listener, err := net.Listen("tcp", "localhost:3000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		cnn, err := listener.Accept()
+		if err != nil {
+			log.Printf("Connection with %s , err: %s", cnn.LocalAddr().Network(), err)
+			continue
+		}
+
+		go handleEchoConnV2(cnn)
+
+	}
+}
 func EchoClient() {
 	cnn, err := net.Dial("tcp", "localhost:3000")
 	if err != nil {

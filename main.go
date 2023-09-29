@@ -1,6 +1,6 @@
 package main
 
-import "github.com/Artemides/problems/fundamentals/concurrency"
+import "github.com/Artemides/problems/fundamentals/plot"
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -15,9 +15,6 @@ func main() {
 	// fundamentals.Fetch()
 	//138 Links
 	// interfaces.DecodeXML()
-	concurrency.ThumbnailMain() //pid 11944
 
-	// $ TZ=US/Eastern    ./exe/clock-server -port 8010 & 17714
-	// $ TZ=Asia/Tokyo    ./exe/clock-server -port 8020 & 17761
-	// $ TZ=Europe/London ./exe/clock-server -port 8030 & 17800
+	plot.Render() //368.5545ms
 }
