@@ -1,6 +1,9 @@
 package main
 
 import (
+	"flag"
+	"fmt"
+
 	"github.com/Artemides/problems/fundamentals/concurrency"
 )
 
@@ -17,6 +20,13 @@ func main() {
 	// fundamentals.Fetch()
 	//138 Links
 	// interfaces.DecodeXML()
-
-	concurrency.RocketLaunchMain()
+	server := flag.Bool("server", true, "select server or client")
+	flag.Parse()
+	if *server {
+		fmt.Println("Running Server")
+		concurrency.EchoServerMain()
+	} else {
+		fmt.Println("Running Client")
+		concurrency.EchoClient()
+	}
 }

@@ -63,8 +63,35 @@ func handleEchoConnV2(cnn net.Conn) {
 	fmt.Println("Close All")
 	cnn.Close()
 }
-func EchoServerMain() {
+func handleEchoConnV3(cnn net.Conn) {
+	inputs := make(chan string)
+	timeout := time.NewTimer(10 * time.Second)
+	go func() {
+		input := bufio.NewScanner(cnn)
+		for input.Scan() {
+			msg := input.Text()
+			inputs <- msg
+			timeout.Reset(10 * time.Second)
+		}
+		close(inputs)
+	}()
 
+	for {
+		select {
+		case msg := <-inputs:
+			fmt.Println("received: ", msg)
+			go echo(cnn, msg, 1*time.Second)
+		case <-timeout.C:
+			log.Printf("Connextion Closed: %s", cnn.LocalAddr().Network())
+			cnn.Close()
+			return
+		}
+	}
+
+}
+
+func EchoServerMain() {
+	EchoServerV3()
 }
 func EchoServer() {
 	listener, err := net.Listen("tcp", "localhost:3000")
@@ -99,6 +126,26 @@ func EchoServerV2() {
 		}
 
 		go handleEchoConnV2(cnn)
+
+	}
+}
+
+// this echo server disconects a client if no activity is
+// received within t seconds
+func EchoServerV3() {
+	listener, err := net.Listen("tcp", "localhost:3000")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for {
+		cnn, err := listener.Accept()
+		if err != nil {
+			log.Printf("Connection with %s , err: %s", cnn.LocalAddr().Network(), err)
+			continue
+		}
+
+		go handleEchoConnV3(cnn)
 
 	}
 }
