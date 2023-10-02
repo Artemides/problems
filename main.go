@@ -1,11 +1,6 @@
 package main
 
-import (
-	"flag"
-	"fmt"
-
-	"github.com/Artemides/problems/fundamentals/concurrency"
-)
+import "github.com/Artemides/problems/fundamentals/concurrency"
 
 func main() {
 	// fmt.Println(profits.MaxProfit([]int{3, 1, 2, 5, 2, 7, 0, 2, 4, 6, 1}))
@@ -20,13 +15,14 @@ func main() {
 	// fundamentals.Fetch()
 	//138 Links
 	// interfaces.DecodeXML()
-	server := flag.Bool("server", true, "select server or client")
-	flag.Parse()
-	if *server {
-		fmt.Println("Running Server")
-		concurrency.EchoServerMain()
-	} else {
-		fmt.Println("Running Client")
-		concurrency.EchoClient()
-	}
+	// server := flag.Bool("server", true, "select server or client")
+	// flag.Parse()
+	// if *server {
+	// 	fmt.Println("Running Server")
+	// 	concurrency.EchoServerMain()
+	// } else {
+	// 	fmt.Println("Running Client")
+	// 	concurrency.EchoClient()
+	// }
+	concurrency.DiskUsageMain()
 }
