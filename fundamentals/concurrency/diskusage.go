@@ -54,6 +54,10 @@ func WalkdirV2(dir string, wg *sync.WaitGroup, fileSize chan<- int64, semaphore 
 }
 func walkdirV3(root, dir string, wg *sync.WaitGroup, fileSize chan<- dirPath, semaphore chan struct{}) {
 	defer wg.Done()
+	if cancel() {
+		return
+	}
+
 	entries := direntriesV2(dir, semaphore)
 	for _, entry := range entries {
 		if entry.IsDir() {
@@ -82,7 +86,12 @@ func direntries(dir string) []fs.DirEntry {
 }
 
 func direntriesV2(dir string, semaphore chan struct{}) []fs.DirEntry {
-	semaphore <- struct{}{}
+	select {
+	case semaphore <- struct{}{}:
+	case <-done:
+		return nil
+	}
+
 	defer func() { <-semaphore }()
 
 	entries, err := os.ReadDir(dir)
@@ -176,7 +185,7 @@ func DiskUsageV3() {
 	v := flag.Bool("v", false, "show progress message")
 	flag.Parse()
 	roots := flag.Args()
-	fmt.Println(roots)
+
 	if len(roots) == 0 {
 		roots = []string{"."}
 	}
@@ -193,6 +202,10 @@ func DiskUsageV3() {
 		close(filesizes)
 	}()
 
+	go func() {
+		os.Stdin.Read(make([]byte, 1))
+		close(done)
+	}()
 	// set up
 
 	var tick <-chan time.Time
@@ -211,11 +224,29 @@ loop:
 			rootSize[dirPath.dir] += dirPath.size
 		case <-tick:
 			printDiskUsageV2(rootSize)
+		case <-done:
+			for range filesizes {
+			}
+			return
 		}
+
 	}
 
 	printDiskUsageV2(rootSize)
 }
+
+var done = make(chan struct{})
+
+func cancel() bool {
+	select {
+	case <-done:
+		return true
+	default:
+		return false
+
+	}
+}
+
 func DiskUsageMain() {
 	DiskUsageV3()
 }
