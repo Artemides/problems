@@ -75,7 +75,7 @@ func ConcurrentCrawlerV2() {
 	}
 
 }
-func concurrentCrawlerV3() {
+func ConcurrentCrawlerV3() {
 	worklist := make(chan []string)
 	unseen := make(chan string)
 	seen := make(map[string]bool)
