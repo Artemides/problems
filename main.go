@@ -24,5 +24,5 @@ func main() {
 	// 	fmt.Println("Running Client")
 	// 	concurrency.EchoClient()
 	// }
-	concurrency.DiskUsageMain()
+	concurrency.CrawlerMain()
 }
