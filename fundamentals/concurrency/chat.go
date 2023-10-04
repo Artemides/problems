@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"time"
 )
 
 type client struct {
@@ -73,21 +74,44 @@ func serveChat() {
 }
 
 func handleChatConnection(cnn net.Conn) {
+	inputsChan := make(chan string)
+	timeout := time.NewTimer(15 * time.Second)
 	ch := make(chan string)
+
 	go handleWritingMessages(cnn, ch)
 
 	me := cnn.RemoteAddr().String()
 	ch <- "connected as : " + me
 	incomingClients <- client{ch, me}
 
-	input := bufio.NewScanner(cnn)
-	for input.Scan() {
-		messages <- me + " : " + input.Text()
+	go scanClientMessage(cnn, inputsChan, timeout)
+
+loop:
+	for {
+		select {
+		case msg := <-inputsChan:
+			messages <- msg
+		case <-timeout.C:
+			fmt.Fprintf(cnn, "You were disconnected due to inactivity.")
+			cnn.Close()
+			break loop
+		}
 	}
 
 	leavingClients <- client{ch, me}
 	messages <- me + " : has left"
-	cnn.Close()
+
+}
+
+func scanClientMessage(cnn net.Conn, inputsChan chan<- string, timer *time.Timer) {
+	input := bufio.NewScanner(cnn)
+	me := cnn.RemoteAddr().String()
+
+	for input.Scan() {
+		inputsChan <- me + " : " + input.Text()
+		timer.Reset(15 * time.Second)
+	}
+	close(inputsChan)
 }
 
 func handleWritingMessages(cnn net.Conn, ch <-chan string) {
