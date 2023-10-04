@@ -86,11 +86,15 @@ func handleChatConnection(cnn net.Conn) {
 		}
 	}()
 
-	me := cnn.RemoteAddr().String()
+	fmt.Fprintln(cnn, "Welcome to chat room")
+	fmt.Fprintln(cnn, "enter your name: ")
+	input := bufio.NewScanner(cnn)
+	input.Scan()
+	me := input.Text()
+
 	ch <- "connected as : " + me
 	incomingClients <- client{ch, me}
 
-	input := bufio.NewScanner(cnn)
 	for input.Scan() {
 		messages <- me + " : " + input.Text()
 		timeout.Reset(15 * time.Second)
