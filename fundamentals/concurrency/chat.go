@@ -7,7 +7,10 @@ import (
 	"net"
 )
 
-type client chan<- string
+type client struct {
+	msgChan chan<- string
+	name    string
+}
 
 var (
 	incomingClients = make(chan client)
@@ -22,16 +25,34 @@ func broadcaster() {
 		select {
 		case msg := <-messages:
 			for client := range clients {
-				client <- msg
+				client.msgChan <- msg
 			}
 		case client := <-incomingClients:
 			clients[client] = true
+			go printClientsSet(messages, clients, client)
+
 		case client := <-leavingClients:
+
 			delete(clients, client)
-			close(client)
+			close(client.msgChan)
 		}
 
 	}
+}
+
+func printClientsSet(messages chan<- string, clients map[client]bool, joinedClient client) {
+	var format string
+	var idx int = 0
+	for client := range clients {
+		idx++
+		if joinedClient.name == client.name {
+			format += fmt.Sprintf("%d. %s - recently joined\n", idx, client.name)
+			continue
+		}
+
+		format += fmt.Sprintf("%d. %s\n", idx, client.name)
+	}
+	messages <- format
 }
 
 func serveChat() {
@@ -57,15 +78,14 @@ func handleChatConnection(cnn net.Conn) {
 
 	me := cnn.RemoteAddr().String()
 	ch <- "connected as : " + me
-	messages <- me + " joined"
-	incomingClients <- ch
+	incomingClients <- client{ch, me}
 
 	input := bufio.NewScanner(cnn)
 	for input.Scan() {
 		messages <- me + " : " + input.Text()
 	}
 
-	leavingClients <- ch
+	leavingClients <- client{ch, me}
 	messages <- me + " : has left"
 	cnn.Close()
 }
@@ -75,6 +95,6 @@ func handleWritingMessages(cnn net.Conn, ch <-chan string) {
 		fmt.Fprintln(cnn, msg)
 	}
 }
-func ChainMain() {
+func ChatMain() {
 	serveChat()
 }
