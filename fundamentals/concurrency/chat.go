@@ -74,44 +74,30 @@ func serveChat() {
 }
 
 func handleChatConnection(cnn net.Conn) {
-	inputsChan := make(chan string)
 	timeout := time.NewTimer(15 * time.Second)
 	ch := make(chan string)
 
 	go handleWritingMessages(cnn, ch)
 
+	go func() {
+		for range timeout.C {
+			fmt.Fprintf(cnn, "You were disconnected due to inactivity.")
+			cnn.Close()
+		}
+	}()
+
 	me := cnn.RemoteAddr().String()
 	ch <- "connected as : " + me
 	incomingClients <- client{ch, me}
 
-	go scanClientMessage(cnn, inputsChan, timeout)
-
-loop:
-	for {
-		select {
-		case msg := <-inputsChan:
-			messages <- msg
-		case <-timeout.C:
-			fmt.Fprintf(cnn, "You were disconnected due to inactivity.")
-			cnn.Close()
-			break loop
-		}
+	input := bufio.NewScanner(cnn)
+	for input.Scan() {
+		messages <- me + " : " + input.Text()
+		timeout.Reset(15 * time.Second)
 	}
 
 	leavingClients <- client{ch, me}
 	messages <- me + " : has left"
-
-}
-
-func scanClientMessage(cnn net.Conn, inputsChan chan<- string, timer *time.Timer) {
-	input := bufio.NewScanner(cnn)
-	me := cnn.RemoteAddr().String()
-
-	for input.Scan() {
-		inputsChan <- me + " : " + input.Text()
-		timer.Reset(15 * time.Second)
-	}
-	close(inputsChan)
 }
 
 func handleWritingMessages(cnn net.Conn, ch <-chan string) {
