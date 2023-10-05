@@ -3,6 +3,7 @@ package sharing
 import (
 	"fmt"
 	"log"
+	"sync"
 	"testing"
 	"time"
 )
@@ -23,4 +24,24 @@ func TestMemo(t *testing.T) {
 
 		fmt.Printf("%s, %s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
 	}
+}
+
+func TestMemoConcurrently(t *testing.T) {
+	m := New(httpGetBody)
+	var wg sync.WaitGroup
+
+	for _, url := range incommingURLs() {
+		wg.Add(1)
+		go func(url string) {
+			defer wg.Done()
+			start := time.Now()
+			value, err := m.Get(url)
+			if err != nil {
+				log.Print(err)
+			}
+
+			fmt.Printf("%s, %s, %d bytes\n", url, time.Since(start), len(value.([]byte)))
+		}(url)
+	}
+	wg.Wait()
 }
