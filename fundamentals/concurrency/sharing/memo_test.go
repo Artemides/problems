@@ -2,7 +2,9 @@ package sharing
 
 import (
 	"fmt"
+	"io"
 	"log"
+	"net/http"
 	"sync"
 	"testing"
 	"time"
@@ -11,6 +13,16 @@ import (
 func incommingURLs() []string {
 
 	return []string{"https://golang.org", "https://play.golang.org", "http://gopl.io", "https://golang.org"}
+}
+
+func httpGetBody(url string) (interface{}, error) {
+	response, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	return io.ReadAll(response.Body)
 }
 
 func TestMemo(t *testing.T) {

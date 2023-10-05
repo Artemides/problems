@@ -1,44 +1,41 @@
 package sharing
 
 import (
-	"io"
-	"net/http"
 	"sync"
 )
 
 type Memo struct {
 	f     Func
-	cache map[string]Result
 	mutex sync.Mutex
+	memo  map[string]*entry
 }
 
 type Func func(key string) (interface{}, error)
-
-type Result struct {
+type entry struct {
+	res   result
+	ready chan struct{}
+}
+type result struct {
 	value interface{}
 	err   error
 }
 
 func New(f Func) *Memo {
-	return &Memo{f: f, cache: make(map[string]Result)}
+	return &Memo{f: f, memo: make(map[string]*entry)}
 }
+
 func (m *Memo) Get(key string) (interface{}, error) {
 	m.mutex.Lock()
-	res, ok := m.cache[key]
-	if !ok {
-		res.value, res.err = m.f(key)
-		m.cache[key] = res
+	_entry := m.memo[key]
+	if _entry != nil {
+		m.mutex.Unlock()
+		<-_entry.ready
+		return _entry.res.value, _entry.res.err
 	}
+
+	_entry = &entry{ready: make(chan struct{})}
 	m.mutex.Unlock()
-
-	return res.value, res.err
-}
-
-func httpGetBody(url string) (interface{}, error) {
-	response, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-	return io.ReadAll(response.Body)
+	_entry.res.value, _entry.res.err = m.f(key)
+	close(_entry.ready)
+	return _entry.res.value, _entry.res.err
 }
