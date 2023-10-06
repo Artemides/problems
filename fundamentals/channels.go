@@ -3,6 +3,7 @@ package fundamentals
 import (
 	"fmt"
 	"math/rand"
+
 	"sync"
 	"time"
 )
