@@ -26,5 +26,5 @@ func main() {
 	// 	fmt.Println("Running Client")
 	// 	concurrency.EchoClient()
 	// }
-	threads.VSMain()
+	threads.PingPongMain()
 }
