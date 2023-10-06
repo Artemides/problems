@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/concurrency/sharing"
+	"github.com/Artemides/problems/fundamentals/concurrency/threads"
 )
 
 func main() {
@@ -26,5 +26,5 @@ func main() {
 	// 	fmt.Println("Running Client")
 	// 	concurrency.EchoClient()
 	// }
-	sharing.BankMain()
+	threads.VSMain()
 }
