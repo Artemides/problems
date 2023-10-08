@@ -1,7 +1,9 @@
 package main
 
 import (
-	"github.com/Artemides/problems/fundamentals/concurrency/threads"
+	"fmt"
+
+	"github.com/Artemides/problems/fundamentals/testing"
 )
 
 func main() {
@@ -26,5 +28,6 @@ func main() {
 	// 	fmt.Println("Running Client")
 	// 	concurrency.EchoClient()
 	// }
-	threads.MAXPROCSMain()
+
+	fmt.Println(testing.IsPalindrome("anitalavalatina"))
 }
