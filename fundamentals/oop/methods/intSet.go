@@ -154,6 +154,12 @@ func (set *IntSet) Copy() *IntSet {
 	return &newSet
 }
 
+func NewInset(data ...int) *IntSet {
+	set := IntSet{}
+	set.AddAll(data...)
+	return &set
+}
+
 func RunSet() {
 	var set IntSet
 
@@ -162,4 +168,5 @@ func RunSet() {
 
 	setElems := set.Elems()
 	fmt.Println("Set 1 Elems: ", setElems)
+
 }
