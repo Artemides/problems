@@ -36,13 +36,12 @@ func Count(slice []string) int {
 	return mapping[key]
 }
 
-func RuneCount() {
+func RuneCount() (map[rune]int, [utf8.UTFMax + 1]int, int) {
 	counts := make(map[rune]int)
 	var utflen [utf8.UTFMax + 1]int
 	invalid := 0
 	in := bufio.NewReader(os.Stdin)
 	for {
-
 		r, n, err := in.ReadRune()
 		if err == io.EOF {
 			break
@@ -59,21 +58,18 @@ func RuneCount() {
 		counts[r]++
 		utflen[n]++
 	}
-	fmt.Printf("rune\tcount\n")
-	for key, count := range counts {
-		fmt.Printf("%q\t%d\n", key, count)
-	}
-	fmt.Printf("\nlen\tcount\n")
-	for i, n := range utflen {
-		if i > 0 {
 
-			fmt.Printf("%d\t%d\n", i, n)
-		}
-	}
+	// for i, n := range utflen {
+	// 	if i > 0 {
+	// 		fmt.Printf("%d\t%d\n", i, n)
+	// 	}
+	// }
 
-	if invalid > 0 {
-		fmt.Printf("\n%d invalid UTF-8 characters\n", invalid)
-	}
+	// if invalid > 0 {
+	// 	fmt.Printf("\n%d invalid UTF-8 characters\n", invalid)
+	// }
+
+	return counts, utflen, invalid
 }
 
 func WordFreq() {
