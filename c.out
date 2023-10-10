@@ -1,0 +1,24 @@
+mode: set
+github.com/Artemides/problems/fundamentals/testing/echo.go:18.17,20.51 2 0
+github.com/Artemides/problems/fundamentals/testing/echo.go:20.51,23.3 2 0
+github.com/Artemides/problems/fundamentals/testing/echo.go:25.58,27.13 2 1
+github.com/Artemides/problems/fundamentals/testing/echo.go:27.13,29.3 1 1
+github.com/Artemides/problems/fundamentals/testing/echo.go:30.2,30.12 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:5.37,6.31 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:6.31,7.43 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:7.43,9.4 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:12.2,12.13 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:15.39,17.29 2 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:17.29,18.31 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:18.31,19.12 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:22.3,22.35 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:25.2,25.34 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:25.34,26.43 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:26.43,28.4 1 1
+github.com/Artemides/problems/fundamentals/testing/palindrome.go:30.2,30.13 1 1
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:16.45,19.16 3 0
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:19.16,21.3 1 0
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:25.40,25.52 1 1
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:27.34,32.18 4 1
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:32.18,34.3 1 1
+github.com/Artemides/problems/fundamentals/testing/storageUsed.go:36.2,37.27 2 0
