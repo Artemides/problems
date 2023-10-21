@@ -1,9 +1,7 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/Artemides/problems/fundamentals/testing"
+	"github.com/Artemides/problems/turing"
 )
 
 func main() {
@@ -29,5 +27,5 @@ func main() {
 	// 	concurrency.EchoClient()
 	// }
 
-	fmt.Println(testing.IsPalindrome("anitalavalatina"))
+	turing.Arr()
 }

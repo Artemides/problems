@@ -20,6 +20,18 @@ func TestIsPalindrome(t *testing.T) {
 	}
 }
 
+func BenchmarkIsPalindromeV2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		IsPalindromeV2("A man, a plan, a canal:Panama")
+	}
+}
+
+func BenchmarkIsPalindromeV3(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		IsPalindromeV3("A man, a plan, a canal:Panama")
+	}
+}
+
 func TestNotPalindrome(t *testing.T) {
 	if IsPalindrome("palindrome") {
 		t.Error(`IsPalindrome(palindrome) = true`)
