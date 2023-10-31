@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Artemides/problems/turing"
+	"github.com/Artemides/problems/fundamentals/reflection"
 )
 
 func main() {
@@ -27,5 +27,5 @@ func main() {
 	// 	concurrency.EchoClient()
 	// }
 
-	turing.Arr()
+	reflection.DisplayMain()
 }
